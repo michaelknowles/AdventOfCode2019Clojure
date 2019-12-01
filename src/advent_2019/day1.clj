@@ -5,9 +5,7 @@
 
 (defn find-fuel
   [mass]
-  (- (Math/floor
-      (/ (Integer/parseInt mass) 3))
-     2))
+  (- (quot (Integer/parseInt mass) 3) 2))
 
 (defn day1
   "Answer: 3297896"
