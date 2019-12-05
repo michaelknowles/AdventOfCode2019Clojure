@@ -12,14 +12,16 @@ In the folder, run `lein run`.  Input the year and day you want to run.  Output 
 
 ## Examples
 
-`PS C:\Users\mikew\Projects\AdventOfCodeClojure> lein run
+```clojure
+PS C:\Users\mikew\Projects\AdventOfCodeClojure> lein run
 Advent of Code
 Input a year (2019):
 2019
 Input a day:
 1
 Running  advent-2019.day1 / day1
-{:part1 3297896, :part2 4943969}`
+{:part1 3297896, :part2 4943969}
+```
 
 ## License
 
