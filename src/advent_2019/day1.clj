@@ -17,7 +17,7 @@
 (defn iter-mass->fuel
   "The fuel is the mass divided by 3, rounded down, and subtracted by 2.
    The fuel itself requires fuel so find the fuel required for that as well.
-   The fuel cannot be negative."
+   Iterate until the result is 0 or negative."
   [mass]
   (->> (iterate mass->fuel mass)
        (take-while pos?)
@@ -30,7 +30,7 @@
   (reduce + (map iter-mass->fuel input)))
 
 (defn day1
-  [input]
+  []
   (assoc {}
          :part1 (part1 input-day1)
          :part2 (part2 input-day1)))
