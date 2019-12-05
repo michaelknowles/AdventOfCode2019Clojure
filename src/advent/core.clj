@@ -14,9 +14,10 @@
 
 (defn get-result
   [year day]
-  (let [program (symbol (str "advent-" year ".day" day "/day" day))]
-    (println "Running " program)
-    (resolve program)))
+  (let [space (str "advent-" year ".day" day)
+        func (str "day" day)]
+    (println "Running " space "/" func)
+    (into {} ((resolve (symbol space func))))))
 
 (defn -main
   "Run a specific advent of code task."
@@ -24,6 +25,5 @@
   (println "Advent of Code")
   (let
    [year (get-year)
-    day (get-day)
-    result (get-result year day)]
-    (println result)))
+    day (get-day)]
+    (println (get-result year day))))
