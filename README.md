@@ -1,36 +1,29 @@
 # adventofcodeclojure
 
-FIXME: description
+Advent of Code in Clojure.  The project is set up so I can add more years and still be able to run all of them, selectively, from the main function (see Examples).
 
 ## Installation
 
-Download from http://example.com/FIXME.
+Clone this repo.  Requires Clojure and Leiningen.
 
 ## Usage
 
-FIXME: explanation
-
-    $ java -jar adventofcode2019clojure-0.1.0-standalone.jar [args]
-
-## Options
-
-FIXME: listing of options this app accepts.
+In the folder, run `lein run`.  Input the year and day you want to run.  Output will be printed as a map.
 
 ## Examples
 
-...
-
-### Bugs
-
-...
-
-### Any Other Sections
-### That You Think
-### Might be Useful
+`PS C:\Users\mikew\Projects\AdventOfCodeClojure> lein run
+Advent of Code
+Input a year (2019):
+2019
+Input a day:
+1
+Running  advent-2019.day1 / day1
+{:part1 3297896, :part2 4943969}`
 
 ## License
 
-Copyright © 2019 FIXME
+Copyright © 2019 Michael Knowles
 
 This program and the accompanying materials are made available under the
 terms of the Eclipse Public License 2.0 which is available at
