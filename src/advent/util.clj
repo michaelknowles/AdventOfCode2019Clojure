@@ -3,7 +3,7 @@
             [clojure.string :as string]))
 
 (defn read-file
-  "Read the [file-name] in the [year] and split the lines"
+  "Read the [file-name] and split the lines"
   [file-name]
   (->> (io/resource file-name)
        (slurp)
