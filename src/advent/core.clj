@@ -1,7 +1,8 @@
 (ns advent.core
   (:gen-class)
   (:require [advent-2019.day1]
-            [advent-2019.day2]))
+            [advent-2019.day2]
+            [advent-2019.day3]))
 
 (defn get-year
   []
