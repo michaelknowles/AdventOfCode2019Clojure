@@ -17,30 +17,70 @@
 (defn up
   "Get all points from the start going up."
   [start distance]
-  (->> (iterate inc (:y start)) ; up = increasing y value
-       (take (inc distance))
-       (map #(assoc {} :x (:x start) :y %1))))
+  (let [{point :point
+         step :step} start]
+    (loop [point {:x (:x point) :y (inc (:y point))}
+           step (inc step)
+           distance (dec distance)
+           all []]
+      (if (neg? distance)
+        all
+        (recur {:x (:x point) :y (inc (:y point))}
+               (inc step)
+               (dec distance)
+               (conj all
+                     (assoc {} :point point :step step)))))))
 
 (defn down
   "Get all points from the start going down."
   [start distance]
-  (->> (iterate dec (:y start)) ; down = decreasing y value
-       (take (inc distance))
-       (map #(assoc {} :x (:x start) :y %1))))
-
-(defn right
-  "Get all points from the start going right."
-  [start distance]
-  (->> (iterate inc (:x start)) ; right = increasing x value
-       (take (inc distance))
-       (map #(assoc {} :x %1 :y (:y start)))))
+  (let [{point :point
+         step :step} start]
+    (loop [point {:x (:x point) :y (dec (:y point))}
+           step (inc step)
+           distance (dec distance)
+           all []]
+      (if (neg? distance)
+        all
+        (recur {:x (:x point) :y (dec (:y point))}
+               (inc step)
+               (dec distance)
+               (conj all
+                     (assoc {} :point point :step step)))))))
 
 (defn left
   "Get all points from the start going left."
   [start distance]
-  (->> (iterate dec (:x start)) ; left = decreasing x value
-       (take (inc distance))
-       (map #(assoc {} :x %1 :y (:y start)))))
+  (let [{point :point
+         step :step} start]
+    (loop [point {:x (dec (:x point)) :y (:y point)}
+           step (inc step)
+           distance (dec distance)
+           all []]
+      (if (neg? distance)
+        all
+        (recur {:x (dec (:x point)) :y (:y point)}
+               (inc step)
+               (dec distance)
+               (conj all
+                     (assoc {} :point point :step step)))))))
+
+(defn right
+  "Get all points from the start going left."
+  [start distance]
+  (let [{point :point
+         step :step} start]
+    (loop [point {:x (inc (:x point)) :y (:y point)}
+           step (inc step)
+           distance (dec distance)
+           all []]
+      (if (neg? distance)
+        all
+        (recur {:x (inc (:x point)) :y (:y point)}
+               (inc step)
+               (dec distance)
+               (conj all
+                     (assoc {} :point point :step step)))))))
 
 (defn path->points
   "Return all points traversed on a given path from the starting point."
@@ -54,7 +94,7 @@
       (= "R" dir) (right start dis))))
 
 (defn input->points
-  "Get all points traversed using the given input."
+  "Get all points traversed from the origin using the given input."
   [input]
   (set
    (reduce (fn [all path]
@@ -62,7 +102,7 @@
                      (path->points
                       (last all) ; use the ending point of the last path
                       (direction path))))
-           [{:x 0 :y 0 :step 0}] input)))
+           [{:point {:x 0 :y 0} :step 0}] input)))
 
 (defn distance
   "Calculate the distance from the origin to the given point."
@@ -70,20 +110,43 @@
   (+ (Math/abs (- (:x point) 0))
      (Math/abs (- (:y point) 0))))
 
+(defn find-intersections
+  "Get a set of all intersecting points."
+  [points]
+  (->> (map #(map :point %1) points)
+       (map set)
+       (apply clojure.set/intersection)))
+
 (defn find-closest-intersection
   "Find the intersection closest to the origin."
   [points]
-  (->> (apply clojure.set/intersection points)
-       (map distance)
-       (sort) ; lowest to highest distance
+  (->> (find-intersections points)
+       (map #(assoc %1 :distance (distance %1)))
+       (sort-by :distance)
        (second))) ; the first point is the origin
 
 (defn part1
+  "Find the closest intersection from input.
+   Answer: 1195"
   [input]
-  (find-closest-intersection (pmap input->points input)))
+  (:distance (find-closest-intersection (pmap input->points input))))
+
+(defn part2
+  "Find the intersection that takes the least amount of combined steps to reach.
+   Answer: 91518"
+  [input]
+  (let [all (pmap input->points input)
+        xs (map #(select-keys %1 [:x :y]) (find-intersections all))
+        flat (apply concat all)]
+    (->> (map (fn [point]
+                (->> (filter #(= point (:point %1)) flat)
+                     (map :step)
+                     (reduce +))) xs)
+         (sort) ; least to greatest
+         (second)))) ; first value is origin
 
 (defn day3
   []
   (assoc {}
          :part1 (part1 input-day3)
-         :part2 ()))
+         :part2 (part2 input-day3)))
