@@ -11,7 +11,8 @@
   [input]
   (->> (re-find #"(^\w)(\d+)" input)
        (rest) ; the first value is the entire input
-       (zipmap [:direction :distance])))
+       (zipmap [:direction :distance])
+       (#(assoc %1 :distance (clojure.edn/read-string (:distance %1))))))
 
 (defn up
   "Get all points from the start going up."
@@ -47,10 +48,10 @@
   (let [{dir :direction
          dis :distance} path]
     (cond
-      (= "U" dir) (up start (clojure.edn/read-string dis))
-      (= "D" dir) (down start (clojure.edn/read-string dis))
-      (= "L" dir) (left start (clojure.edn/read-string dis))
-      (= "R" dir) (right start (clojure.edn/read-string dis)))))
+      (= "U" dir) (up start dis)
+      (= "D" dir) (down start dis)
+      (= "L" dir) (left start dis)
+      (= "R" dir) (right start dis))))
 
 (defn input->points
   "Get all points traversed using the given input."
@@ -61,7 +62,7 @@
                      (path->points
                       (last all) ; use the ending point of the last path
                       (direction path))))
-           [{:x 0 :y 0}] input)))
+           [{:x 0 :y 0 :step 0}] input)))
 
 (defn distance
   "Calculate the distance from the origin to the given point."
