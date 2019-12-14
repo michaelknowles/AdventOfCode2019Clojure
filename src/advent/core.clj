@@ -2,7 +2,8 @@
   (:gen-class)
   (:require [advent-2019.day1]
             [advent-2019.day2]
-            [advent-2019.day3]))
+            [advent-2019.day3]
+            [advent-2019.day4]))
 
 (defn get-year
   []
