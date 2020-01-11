@@ -4,7 +4,8 @@
             [advent-2019.day2]
             [advent-2019.day3]
             [advent-2019.day4]
-            [advent-2019.day5]))
+            [advent-2019.day5]
+            [advent-2019.day6]))
 
 (defn get-year
   []
