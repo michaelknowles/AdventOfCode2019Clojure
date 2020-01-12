@@ -20,33 +20,42 @@
   (map #(clojure.string/split %1 #"\)")
        ["COM)B" "B)C" "C)D" "D)E" "E)F" "B)G" "G)H" "D)I" "E)J" "J)K" "K)L" "K)YOU" "I)SAN"]))
 
-(defn get-satellites
-  [path]
-  (let [[object orbits] path]
-    {object (map second orbits)}))
-
-(defn get-path
-  [orbits object]
-  (->> (let [children (get orbits object)]
-         [object (map #(get-path orbits %1) children)])
-       (flatten)))
-
-(defn build-graph
+(defn sat-map
+  "Return a map of satellite -> object"
   [input]
-  (->> (group-by first input)
-       (map get-satellites)
+  (->> (map (fn [[object satellite]] {satellite object}) input)
        (apply merge)))
+
+(defn path-sat-com
+  "Return the path from the satellite to COM"
+  [orbits satellite]
+  (loop [object (get orbits satellite)
+         path []]
+    (if (nil? object)
+      path
+      (recur (get orbits object) (conj path object)))))
 
 (defn count-orbits
   [input]
-  (let [orbits (build-graph input)]
+  (let [orbits (sat-map input)]
     (->> (keys orbits)
-         (map #(get-path orbits %1))
-         (map (comp dec count)) ; don't need root of each path
+         (map #(path-sat-com orbits %1))
+         (map (comp count))
+         (reduce +))))
+
+(defn count-transfers
+  [input]
+  (let [orbits (sat-map input)
+        targets ["YOU" "SAN"]]
+    (->> (map #(path-sat-com orbits %1) targets)
+         (map set)
+         (apply data/diff)
+         (take 2)
+         (map count)
          (reduce +))))
 
 (defn day6
   []
   (assoc {}
          :part1 (count-orbits input-day6) ; 333679
-         :part2 (count-transfers input-day6)))
+         :part2 (count-transfers input-day6))) ; 370
